@@ -347,6 +347,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
     {
         global $CFG;
         require_once($CFG->dirroot . '/course/renderer.php');
+        require_once($CFG->libdir. '/coursecatlib.php');
         $chelper = new coursecat_helper();
         $course = new course_in_list($course);
 
