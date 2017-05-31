@@ -33,10 +33,10 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('block_prettymycourses/showwelcomearea', new lang_string('showwelcomearea', 'block_prettymycourses'),
         new lang_string('showwelcomeareadesc', 'block_prettymycourses'), 1, PARAM_INT));
     $showcategories = array(
-        BLOCKS_COURSE_OVERVIEW_SHOWCATEGORIES_NONE => new lang_string('none', 'block_prettymycourses'),
-        BLOCKS_COURSE_OVERVIEW_SHOWCATEGORIES_ONLY_PARENT_NAME => new lang_string('onlyparentname', 'block_prettymycourses'),
-        BLOCKS_COURSE_OVERVIEW_SHOWCATEGORIES_FULL_PATH => new lang_string('fullpath', 'block_prettymycourses')
+        BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_NONE => new lang_string('none', 'block_prettymycourses'),
+        BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_ONLY_PARENT_NAME => new lang_string('onlyparentname', 'block_prettymycourses'),
+        BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_FULL_PATH => new lang_string('fullpath', 'block_prettymycourses')
     );
     $settings->add(new admin_setting_configselect('block_prettymycourses/showcategories', new lang_string('showcategories', 'block_prettymycourses'),
-        new lang_string('showcategoriesdesc', 'block_prettymycourses'), BLOCKS_COURSE_OVERVIEW_SHOWCATEGORIES_NONE, $showcategories));
+        new lang_string('showcategoriesdesc', 'block_prettymycourses'), BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_NONE, $showcategories));
 }
