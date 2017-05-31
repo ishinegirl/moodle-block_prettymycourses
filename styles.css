@@ -1,0 +1,87 @@
+.block_prettymycourses .coursechildren {
+    font-weight: normal;
+    font-style: italic;
+}
+
+.block_prettymycourses .categorypath {
+    text-align: right;
+}
+
+.block_prettymycourses .content {
+    margin: 0 20px;
+}
+
+.block_prettymycourses .content .notice {
+    margin: 5px 0;
+}
+
+.block_prettymycourses .coursebox {
+    padding: 15px;
+    width: auto;
+}
+
+.block_prettymycourses .profilepicture {
+    float: left;
+}
+
+.block_prettymycourses .welcome_area {
+    width: 100%;
+    padding-bottom: 5px;
+}
+
+.block_prettymycourses .welcome_message {
+    float: left;
+    padding: 10px;
+    border-collapse: separate;
+    clear: none;
+}
+
+.block_prettymycourses .content h2.title {
+    float: left;
+    margin: 0 0 .5em 0;
+    position: relative;
+}
+
+.block_prettymycourses .course_title {
+    position: relative;
+}
+
+.editing .block_prettymycourses .coursebox .cursor {
+    cursor: move;
+    margin-bottom: 2px;
+}
+
+.editing .block_prettymycourses .move {
+    float: left;
+    padding: 2px 10px 0 0;
+}
+
+.block_prettymycourses .course_list {
+    width: 100%;
+}
+
+.block_prettymycourses div.flush {
+    clear: both;
+}
+
+.block_prettymycourses .activity_info {
+    clear: both;
+}
+
+.block_prettymycourses .activity_overview {
+    padding: 2px;
+}
+
+.block_prettymycourses .activity_overview img.iconlarge {
+    vertical-align: text-bottom;
+    margin-right: 6px;
+}
+
+.block_prettymycourses .singleselect {
+    text-align: left;
+    margin: 0;
+}
+
+.block_prettymycourses .content .course_list .movehere {
+    margin-bottom: 15px;
+}
