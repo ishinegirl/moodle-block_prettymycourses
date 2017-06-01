@@ -56,47 +56,9 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
             global $CFG;
             require_once($CFG->libdir.'/coursecatlib.php');
         }
-        $ismovingcourse = false;
         $courseordernumber = 0;
-        $maxcourses = count($courses);
-        $userediting = false;
-        // Intialise string/icon etc if user is editing and courses > 1
 
-        /*
-        if ($this->page->user_is_editing() && (count($courses) > 1)) {
-            $userediting = true;
-            $this->page->requires->js_init_call('M.block_prettymycourses.add_handles');
 
-            // Check if course is moving
-            $ismovingcourse = optional_param('movecourse', FALSE, PARAM_BOOL);
-            $movingcourseid = optional_param('courseid', 0, PARAM_INT);
-        }
-*/
-        // Render first movehere icon.
-/*
-        if ($ismovingcourse) {
-            // Remove movecourse param from url.
-            $this->page->ensure_param_not_in_url('movecourse');
-
-            // Show moving course notice, so user knows what is being moved.
-            $html .= $this->output->box_start('notice');
-            $a = new stdClass();
-            $a->fullname = $courses[$movingcourseid]->fullname;
-            $a->cancellink = html_writer::link($this->page->url, get_string('cancel'));
-            $html .= get_string('movingcourse', 'block_prettymycourses', $a);
-            $html .= $this->output->box_end();
-
-            $moveurl = new moodle_url('/blocks/prettymycourses/move.php',
-                        array('sesskey' => sesskey(), 'moveto' => 0, 'courseid' => $movingcourseid));
-            // Create move icon, so it can be used.
-            $movetofirsticon = html_writer::empty_tag('img',
-                    array('src' => $this->output->pix_url('movehere'),
-                        'alt' => get_string('movetofirst', 'block_prettymycourses', $courses[$movingcourseid]->fullname),
-                        'title' => get_string('movehere')));
-            $moveurl = html_writer::link($moveurl, $movetofirsticon);
-            $html .= html_writer::tag('div', $moveurl, array('class' => 'movehere'));
-        }
-*/
         foreach ($courses as $key => $course) {
 
             $html .= $this->output->box_start('coursebox', "course-{$course->id}");

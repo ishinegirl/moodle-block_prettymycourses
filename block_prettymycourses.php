@@ -60,6 +60,7 @@ class block_prettymycourses extends block_base {
         $this->content = new stdClass();
         $this->content->text = '';
         $this->content->footer = '';
+        $this->title = $config->showtitle;
 
         $content = array();
 
