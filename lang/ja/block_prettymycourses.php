@@ -69,5 +69,7 @@ $string['startdate'] = '開始日: {$a}';
 $string['enddate'] = '終了日: {$a}';
 $string['showtitle'] = 'Title to display';
 $string['showtitledesc'] = '';
+$string['showcoursenames'] = 'コース名を表示する';
+$string['showcoursenamesdesc'] = '';
 $string['progress'] = '進捗率';
 

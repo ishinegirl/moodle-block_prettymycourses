@@ -69,5 +69,7 @@ $string['startdate'] = 'Start: {$a}';
 $string['enddate'] = 'End: {$a}';
 $string['showtitle'] = 'Title to display';
 $string['showtitledesc'] = '';
+$string['showcoursenames'] = 'Show course names';
+$string['showcoursenamesdesc'] = '';
 $string['progress'] = 'Progress';
 

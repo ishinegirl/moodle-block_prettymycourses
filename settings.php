@@ -41,4 +41,7 @@ if ($ADMIN->fulltree) {
         new lang_string('showcategoriesdesc', 'block_prettymycourses'), BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_NONE, $showcategories));
     $settings->add(new admin_setting_configtext('block_prettymycourses/showtitle', new lang_string('showtitle', 'block_prettymycourses'),
         new lang_string('showtitledesc', 'block_prettymycourses'), 'Pretty MyCourses', PARAM_RAW));
+
+    $settings->add(new admin_setting_configcheckbox('block_prettymycourses/showcoursenames', new lang_string('showcoursenames', 'block_prettymycourses'),
+        new lang_string('showcoursenamesdesc', 'block_prettymycourses'), 1, PARAM_INT));
 }

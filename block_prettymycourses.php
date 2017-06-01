@@ -63,12 +63,12 @@ class block_prettymycourses extends block_base {
         $this->title = $config->showtitle;
 
         $content = array();
-/*
+
         $updatemynumber = optional_param('mynumber', -1, PARAM_INT);
         if ($updatemynumber >= 0) {
             block_prettymycourses_update_mynumber($updatemynumber);
         }
-*/
+
         profile_load_custom_fields($USER);
 
         $showallcourses = ($updatemynumber === self::SHOW_ALL_COURSES);
@@ -92,8 +92,7 @@ class block_prettymycourses extends block_base {
             $this->content->text .= get_string('nocourses','my');
         } else {
             // For each course, build category cache.
-            $this->content->text .= $renderer->prettymycourses($sortedcourses, $overviews);
-            $this->content->text .= $renderer->hidden_courses($totalcourses - count($sortedcourses));
+            $this->content->text .= $renderer->prettymycourses($sortedcourses,  $config->showcoursenames);
         }
 
         return $this->content;

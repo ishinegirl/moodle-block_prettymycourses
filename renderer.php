@@ -32,44 +32,17 @@ defined('MOODLE_INTERNAL') || die;
 class block_prettymycourses_renderer extends plugin_renderer_base {
 
 
-    public function prettymycourses($courses, $overviews) {
+    public function prettymycourses($courses, $showcoursenames) {
         $html='';
         foreach ($courses as $key => $course) {
-            $html .= $this->render_one_course($course);
+            $html .= $this->render_one_course($course, $showcoursenames);
         }
         // Wrap course list in a div and return.
         return html_writer::tag('div', $html, array('class' => 'course_list'));
 
     }
 
-    /**
-     * Coustuct activities overview for a course
-     *
-     * @param int $cid course id
-     * @param array $overview overview of activities in course
-     * @return string html of activities overview
-     */
-    protected function activity_display($cid, $overview) {
-        $output = html_writer::start_tag('div', array('class' => 'activity_info'));
-        foreach (array_keys($overview) as $module) {
-            $output .= html_writer::start_tag('div', array('class' => 'activity_overview'));
-            $url = new moodle_url("/mod/$module/index.php", array('id' => $cid));
-            $modulename = get_string('modulename', $module);
-            $icontext = html_writer::link($url, $this->output->pix_icon('icon', $modulename, 'mod_'.$module, array('class'=>'iconlarge')));
-            if (get_string_manager()->string_exists("activityoverview", $module)) {
-                $icontext .= get_string("activityoverview", $module);
-            } else {
-                $icontext .= get_string("activityoverview", 'block_prettymycourses', $modulename);
-            }
 
-            // Add collapsible region with overview text in it.
-            $output .= $this->collapsible_region($overview[$module], '', 'region_'.$cid.'_'.$module, $icontext, '', true);
-
-            $output .= html_writer::end_tag('div');
-        }
-        $output .= html_writer::end_tag('div');
-        return $output;
-    }
 
     /**
      * Constructs header in editing mode
@@ -90,102 +63,6 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         $output .= $this->output->render($select);
 
         $output .= $this->output->box_end();
-        return $output;
-    }
-
-    /**
-     * Show hidden courses count
-     *
-     * @param int $total count of hidden courses
-     * @return string html
-     */
-    public function hidden_courses($total) {
-        if ($total <= 0) {
-            return;
-        }
-        $output = $this->output->box_start('notice');
-        $plural = $total > 1 ? 'plural' : '';
-        $config = get_config('block_prettymycourses');
-        // Show view all course link to user if forcedefaultmaxcourses is not empty.
-        if (!empty($config->forcedefaultmaxcourses)) {
-            $output .= get_string('hiddencoursecount'.$plural, 'block_prettymycourses', $total);
-        } else {
-            $a = new stdClass();
-            $a->coursecount = $total;
-            $a->showalllink = html_writer::link(new moodle_url('/my/index.php', array('mynumber' => block_prettymycourses::SHOW_ALL_COURSES)),
-                    get_string('showallcourses'));
-            $output .= get_string('hiddencoursecountwithshowall'.$plural, 'block_prettymycourses', $a);
-        }
-
-        $output .= $this->output->box_end();
-        return $output;
-    }
-
-    /**
-     * Creates collapsable region
-     *
-     * @param string $contents existing contents
-     * @param string $classes class names added to the div that is output.
-     * @param string $id id added to the div that is output. Must not be blank.
-     * @param string $caption text displayed at the top. Clicking on this will cause the region to expand or contract.
-     * @param string $userpref the name of the user preference that stores the user's preferred default state.
-     *      (May be blank if you do not wish the state to be persisted.
-     * @param bool $default Initial collapsed state to use if the user_preference it not set.
-     * @return bool if true, return the HTML as a string, rather than printing it.
-     */
-    protected function collapsible_region($contents, $classes, $id, $caption, $userpref = '', $default = false) {
-            $output  = $this->collapsible_region_start($classes, $id, $caption, $userpref, $default);
-            $output .= $contents;
-            $output .= $this->collapsible_region_end();
-
-            return $output;
-        }
-
-    /**
-     * Print (or return) the start of a collapsible region, that has a caption that can
-     * be clicked to expand or collapse the region. If JavaScript is off, then the region
-     * will always be expanded.
-     *
-     * @param string $classes class names added to the div that is output.
-     * @param string $id id added to the div that is output. Must not be blank.
-     * @param string $caption text displayed at the top. Clicking on this will cause the region to expand or contract.
-     * @param string $userpref the name of the user preference that stores the user's preferred default state.
-     *      (May be blank if you do not wish the state to be persisted.
-     * @param bool $default Initial collapsed state to use if the user_preference it not set.
-     * @return bool if true, return the HTML as a string, rather than printing it.
-     */
-    protected function collapsible_region_start($classes, $id, $caption, $userpref = '', $default = false) {
-        // Work out the initial state.
-        if (!empty($userpref) and is_string($userpref)) {
-            user_preference_allow_ajax_update($userpref, PARAM_BOOL);
-            $collapsed = get_user_preferences($userpref, $default);
-        } else {
-            $collapsed = $default;
-            $userpref = false;
-        }
-
-        if ($collapsed) {
-            $classes .= ' collapsed';
-        }
-
-        $output = '';
-        $output .= '<div id="' . $id . '" class="collapsibleregion ' . $classes . '">';
-        $output .= '<div id="' . $id . '_sizer">';
-        $output .= '<div id="' . $id . '_caption" class="collapsibleregioncaption">';
-        $output .= $caption . ' ';
-        $output .= '</div><div id="' . $id . '_inner" class="collapsibleregioninner">';
-        $this->page->requires->js_init_call('M.block_prettymycourses.collapsible', array($id, $userpref, get_string('clicktohideshow')));
-
-        return $output;
-    }
-
-    /**
-     * Close a region started with print_collapsible_region_start.
-     *
-     * @return string return the HTML as a string, rather than printing it.
-     */
-    protected function collapsible_region_end() {
-        $output = '</div></div></div>';
         return $output;
     }
 
@@ -225,28 +102,24 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         return $output;
     }
 
-    protected function render_one_course($course)
+    protected function render_one_course($course, $showcoursename)
     {
         global $CFG;
         require_once($CFG->dirroot . '/course/renderer.php');
-        require_once($CFG->libdir. '/coursecatlib.php');
+        require_once($CFG->libdir . '/coursecatlib.php');
         $chelper = new coursecat_helper();
         $course = new course_in_list($course);
 
+        //init content
         $content = '';
-        $coursename = $chelper->get_course_formatted_name($course);
-        $coursenamelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
-            $coursename, array('class' => $course->visible ? '' : 'dimmed'));
-        $content .= html_writer::tag('div', $coursenamelink, array('class' => 'coursename'));
 
-        /*
-        if ($course->has_summary()) {
-            $content .= html_writer::start_tag('div', array('class' => 'summary'));
-            $content .= $chelper->get_course_formatted_summary($course,
-                array('overflowdiv' => true, 'noclean' => true, 'para' => false));
-            $content .= html_writer::end_tag('div');
+        //if we are showing coursenames, do that.
+        if ($showcoursename) {
+            $coursename = $chelper->get_course_formatted_name($course);
+            $coursenamelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
+                $coursename, array('class' => $course->visible ? '' : 'dimmed'));
+            $content .= html_writer::tag('div', $coursenamelink, array('class' => 'coursename'));
         }
-        */
 
         // Display course overview files.
         $contentimages = $contentfiles = '';
