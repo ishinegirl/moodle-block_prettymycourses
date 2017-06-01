@@ -62,18 +62,24 @@ class block_prettymycourses extends block_base {
         $this->content->footer = '';
         $this->title = $config->showtitle;
 
-        $content = array();
 
-        $updatemynumber = optional_param('mynumber', -1, PARAM_INT);
-        if ($updatemynumber >= 0) {
-            block_prettymycourses_update_mynumber($updatemynumber);
+
+        //get prereg courses and redo array indexes
+        $preregistrations = \block_prettymycourses\preregmanager::fetch_preregistrations($USER->email);
+        $preregistrations = array_values($preregistrations);
+
+
+        $preregcourses = array();
+        if($preregistrations){
+            foreach($preregistrations as $preregistration){
+                $thecourse= get_course($preregistration->courseid);
+                $preregcourses[] = $thecourse;
+            }
         }
 
-        profile_load_custom_fields($USER);
+        //get enrolled courses
+       $courses = enrol_get_my_courses();
 
-        $showallcourses = ($updatemynumber === self::SHOW_ALL_COURSES);
-        list($sortedcourses, $sitecourses, $totalcourses) = block_prettymycourses_get_sorted_courses($showallcourses);
-        $overviews = block_prettymycourses_get_overviews($sitecourses);
 
         $renderer = $this->page->get_renderer('block_prettymycourses');
         if (!empty($config->showwelcomearea)) {
@@ -82,17 +88,12 @@ class block_prettymycourses extends block_base {
             $this->content->text = $renderer->welcome_area($msgcount);
         }
 
-        // Number of sites to display.
-        /*
-        if ($this->page->user_is_editing() && empty($config->forcedefaultmaxcourses)) {
-            $this->content->text .= $renderer->editing_bar_head($totalcourses);
-        }
-        */
-        if (empty($sortedcourses)) {
+
+        if (empty($courses)) {
             $this->content->text .= get_string('nocourses','my');
         } else {
             // For each course, build category cache.
-            $this->content->text .= $renderer->prettymycourses($sortedcourses,  $config->showcoursenames);
+            $this->content->text .= $renderer->prettymycourses($courses, $preregistrations,$preregcourses, $config->showcoursenames);
         }
 
         return $this->content;

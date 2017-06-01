@@ -31,40 +31,30 @@ defined('MOODLE_INTERNAL') || die;
  */
 class block_prettymycourses_renderer extends plugin_renderer_base {
 
+    const S3STUB = 'https://s3-ap-northeast-1.amazonaws.com/ishinevideocontent99/publiccontent/courses/siteimages/ispcx_images';
 
-    public function prettymycourses($courses, $showcoursenames) {
-        $html='';
-        foreach ($courses as $key => $course) {
+
+    public function prettymycourses($courses,$preregistrations,$preregcourses, $showcoursenames)
+    {
+        $html = '';
+        foreach ($courses as $course) {
             $html .= $this->render_one_course($course, $showcoursenames);
         }
+
+        if ($preregistrations) {
+            for ($i = 0; $i < count($preregistrations); $i++) {
+                if (array_key_exists($i, $preregcourses)) {
+                    $html .= $this->render_one_preregistration($preregistrations[$i], $preregcourses[$i], $showcoursenames);
+                }
+            }
+        }
+
         // Wrap course list in a div and return.
         return html_writer::tag('div', $html, array('class' => 'course_list'));
 
     }
 
 
-
-    /**
-     * Constructs header in editing mode
-     *
-     * @param int $max maximum number of courses
-     * @return string html of header bar.
-     */
-    public function editing_bar_head($max = 0) {
-        $output = $this->output->box_start('notice');
-
-        $options = array('0' => get_string('alwaysshowall', 'block_prettymycourses'));
-        for ($i = 1; $i <= $max; $i++) {
-            $options[$i] = $i;
-        }
-        $url = new moodle_url('/my/index.php');
-        $select = new single_select($url, 'mynumber', $options, block_prettymycourses_get_max_user_courses(), array());
-        $select->set_label(get_string('numtodisplay', 'block_prettymycourses'));
-        $output .= $this->output->render($select);
-
-        $output .= $this->output->box_end();
-        return $output;
-    }
 
     /**
      * Cretes html for welcome area
@@ -102,13 +92,13 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         return $output;
     }
 
-    protected function render_one_course($course, $showcoursename)
+    protected function render_one_course($thecourse, $showcoursename)
     {
         global $CFG;
         require_once($CFG->dirroot . '/course/renderer.php');
         require_once($CFG->libdir . '/coursecatlib.php');
         $chelper = new coursecat_helper();
-        $course = new course_in_list($course);
+        $course = new course_in_list($thecourse);
 
         //init content
         $content = '';
@@ -162,7 +152,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate'));
 
         //add progress bar
-        $modinfo = get_fast_modinfo($course);
+        $modinfo = get_fast_modinfo($thecourse);
         $sect_compl_info = \availability_sectioncompleted\condition::get_section_completion_info(
                             \availability_sectioncompleted\condition::ALL_SECTIONS,
                             $course,
@@ -179,6 +169,43 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
     $content .=  html_writer::tag('div', $progresscontainer, array('class' => 'block_prettymycourses_progressbar'));
 
         return html_writer::tag('div', $content, array('class' => 'block_prettymycourses_course'));
-        return $content;
     }
+
+
+    protected function render_one_preregistration($prereg, $course, $showcoursename)
+    {
+        global $CFG;
+        require_once($CFG->dirroot . '/course/renderer.php');
+        require_once($CFG->libdir . '/coursecatlib.php');
+        $chelper = new coursecat_helper();
+        $course = new course_in_list($course);
+
+        //init content
+        $content = '';
+
+        //if we are showing coursenames, do that.
+        if ($showcoursename) {
+            $coursename = $chelper->get_course_formatted_name($course);
+            $content .= html_writer::tag('div', $coursename, array('class' => 'coursename'));
+        }
+
+
+        //grey image
+        $url = self::S3STUB . '/icon/png/gray/icottl_' . $course->shortname . '_g.png';
+        $content .= html_writer::tag('div',
+            html_writer::empty_tag('img', array('src' => $url, 'style' => 'max-height: 150px')),
+            array('class' => 'courseimage'));
+
+
+
+        //add course dates
+        $startdate = get_string('startdate','block_prettymycourses','04/11/2017');;
+        $enddate = get_string('enddate','block_prettymycourses','04/11/2017');
+        $content .=  html_writer::tag('div', $startdate, array('class' => 'block_prettymycourses_startdate'));
+        $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate'));
+
+        return html_writer::tag('div', $content, array('class' => 'block_prettymycourses_course'));
+
+    }
+
 }

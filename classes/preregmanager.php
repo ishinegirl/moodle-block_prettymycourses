@@ -15,13 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Helper functions for prettymycourses block
+ * Block search forums renderer.
  *
- * @package    block_prettymycourses
- * @copyright  2012 Adam Olley <adam.olley@netspot.com.au>
+ * @package     block_prettymycourses
+ * @copyright  2017 Justin Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define('BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_NONE', '0');
-define('BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_ONLY_PARENT_NAME', '1');
-define('BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_FULL_PATH', '2');
+namespace block_prettymycourses;
+defined('MOODLE_INTERNAL') || die();
+
+use plugin_renderer_base;
+use renderable;
+
+/**
+ * Pre registrations manager
+ *
+ * @package    block_prettymycourses
+ * @copyright  2017 Justin Hunt
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class preregmanager {
+
+    /**
+     * fetch preregistrations
+     *
+     * @param String $user_email
+     * @return string
+     */
+    public static function fetch_preregistrations($user_email) {
+            global $DB;
+            $preregistrations =  $DB->get_records('block_prettymycourses_prereg',array('email'=>$user_email));
+            return $preregistrations;
+    }
+
+}
