@@ -65,8 +65,8 @@ $string['view_edit_profile'] = '(View and edit your profile.)';
 $string['welcome'] = 'Welcome {$a}';
 $string['youhavemessages'] = 'You have {$a} unread ';
 $string['youhavenomessages'] = 'You have no unread ';
-$string['startdate'] = 'Start: {$a}';
-$string['enddate'] = 'End: {$a}';
+$string['startdate'] = '開始日: {$a}';
+$string['enddate'] = '終了日: {$a}';
 $string['showtitle'] = 'Title to display';
 $string['showtitledesc'] = '';
 
