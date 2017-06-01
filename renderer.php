@@ -407,7 +407,20 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate'));
 
         //add progress bar
-        $content .=  html_writer::tag('div', 'progress_bar_here', array('class' => 'block_prettymycourses_progressbar'));
+        $modinfo = get_fast_modinfo($course);
+        $sect_compl_info = \availability_sectioncompleted\condition::get_section_completion_info(
+                            \availability_sectioncompleted\condition::ALL_SECTIONS,
+                            $course,
+                            $modinfo) ;
+        $progresspercent= ($sect_compl_info->activitycount && $sect_compl_info->activitycompletedcount)?
+                floor(($sect_compl_info->activitycompletedcount  /  $sect_compl_info->activitycount)*100) :
+                0;
+        $progressbar=html_writer::tag('div', $progresspercent .'%',
+                        array('class' => 'progress-bar','role'=>'progressbar','aria-valuemin'=>"0",
+                        'aria-valuemax'=>"100",'aria-valuenow'=>"$progresspercent",'style'=>"width: $progresspercent%"));
+        $progresscontainer =  html_writer::tag('div', $progressbar, array('class' => 'progress'));
+
+    $content .=  html_writer::tag('div', $progresscontainer, array('class' => 'block_prettymycourses_progressbar'));
 
         return html_writer::tag('div', $content, array('class' => 'block_prettymycourses_course'));
         return $content;
