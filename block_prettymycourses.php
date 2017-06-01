@@ -63,12 +63,12 @@ class block_prettymycourses extends block_base {
         $this->title = $config->showtitle;
 
         $content = array();
-
+/*
         $updatemynumber = optional_param('mynumber', -1, PARAM_INT);
         if ($updatemynumber >= 0) {
             block_prettymycourses_update_mynumber($updatemynumber);
         }
-
+*/
         profile_load_custom_fields($USER);
 
         $showallcourses = ($updatemynumber === self::SHOW_ALL_COURSES);
@@ -83,10 +83,11 @@ class block_prettymycourses extends block_base {
         }
 
         // Number of sites to display.
+        /*
         if ($this->page->user_is_editing() && empty($config->forcedefaultmaxcourses)) {
             $this->content->text .= $renderer->editing_bar_head($totalcourses);
         }
-
+        */
         if (empty($sortedcourses)) {
             $this->content->text .= get_string('nocourses','my');
         } else {

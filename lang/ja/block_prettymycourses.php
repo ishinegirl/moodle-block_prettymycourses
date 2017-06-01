@@ -69,4 +69,5 @@ $string['startdate'] = '開始日: {$a}';
 $string['enddate'] = '終了日: {$a}';
 $string['showtitle'] = 'Title to display';
 $string['showtitledesc'] = '';
+$string['progress'] = '進捗率';
 

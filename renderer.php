@@ -41,86 +41,6 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         return html_writer::tag('div', $html, array('class' => 'course_list'));
 
     }
-    /**
-     * Construct contents of prettymycourses block
-     *
-     * @param array $courses list of courses in sorted order
-     * @param array $overviews list of course overviews
-     * @return string html to be displayed in prettymycourses block
-     */
-    public function orig_prettymycourses($courses, $overviews) {
-        $html = '';
-        //$this->content->text .= '<div class="container-fluid coursebox">';
-        $config = get_config('block_prettymycourses');
-        if ($config->showcategories != BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_NONE) {
-            global $CFG;
-            require_once($CFG->libdir.'/coursecatlib.php');
-        }
-        $courseordernumber = 0;
-
-
-        foreach ($courses as $key => $course) {
-
-            $html .= $this->output->box_start('coursebox', "course-{$course->id}");
-            $html .= html_writer::start_tag('div', array('class' => 'course_title'));
-
-
-            // No need to pass title through s() here as it will be done automatically by html_writer.
-            $attributes = array('title' => $course->fullname);
-            if ($course->id > 0) {
-                if (empty($course->visible)) {
-                    $attributes['class'] = 'dimmed';
-                }
-                $courseurl = new moodle_url('/course/view.php', array('id' => $course->id));
-                $coursefullname = format_string(get_course_display_name_for_list($course), true, $course->id);
-                $link = html_writer::link($courseurl, $coursefullname, $attributes);
-                $html .= $this->output->heading($link, 2, 'title');
-            } else {
-                $html .= $this->output->heading(html_writer::link(
-                    new moodle_url('/auth/mnet/jump.php', array('hostid' => $course->hostid, 'wantsurl' => '/course/view.php?id='.$course->remoteid)),
-                    format_string($course->shortname, true), $attributes) . ' (' . format_string($course->hostname) . ')', 2, 'title');
-            }
-            $html .= $this->output->container('', 'flush');
-            $html .= html_writer::end_tag('div');
-
-            if (!empty($config->showchildren) && ($course->id > 0)) {
-                // List children here.
-                if ($children = block_prettymycourses_get_child_shortnames($course->id)) {
-                    $html .= html_writer::tag('span', $children, array('class' => 'coursechildren'));
-                }
-            }
-
-            // If user is moving courses, then down't show overview.
-            if (isset($overviews[$course->id])) {
-                $html .= $this->activity_display($course->id, $overviews[$course->id]);
-            }
-
-            if ($config->showcategories != BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_NONE) {
-                // List category parent or categories path here.
-                $currentcategory = coursecat::get($course->category, IGNORE_MISSING);
-                if ($currentcategory !== null) {
-                    $html .= html_writer::start_tag('div', array('class' => 'categorypath'));
-                    if ($config->showcategories == BLOCKS_COURSE_PRETTYMYCOURSES_SHOWCATEGORIES_FULL_PATH) {
-                        foreach ($currentcategory->get_parents() as $categoryid) {
-                            $category = coursecat::get($categoryid, IGNORE_MISSING);
-                            if ($category !== null) {
-                                $html .= $category->get_formatted_name().' / ';
-                            }
-                        }
-                    }
-                    $html .= $currentcategory->get_formatted_name();
-                    $html .= html_writer::end_tag('div');
-                }
-            }
-
-            $html .= $this->output->container('', 'flush');
-            $html .= $this->output->box_end();
-            $courseordernumber++;
-
-        }
-        // Wrap course list in a div and return.
-        return html_writer::tag('div', $html, array('class' => 'course_list'));
-    }
 
     /**
      * Coustuct activities overview for a course
@@ -380,7 +300,8 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         $progressbar=html_writer::tag('div', $progresspercent .'%',
                         array('class' => 'progress-bar','role'=>'progressbar','aria-valuemin'=>"0",
                         'aria-valuemax'=>"100",'aria-valuenow'=>"$progresspercent",'style'=>"width: $progresspercent%"));
-        $progresscontainer =  html_writer::tag('div', $progressbar, array('class' => 'progress'));
+        $progressbarlabel =  html_writer::tag('div', get_string('progress','block_prettymycourses'), array('class' => 'progressbarlabel'));
+        $progresscontainer =  html_writer::tag('div',$progressbarlabel . $progressbar, array('class' => 'progress'));
 
     $content .=  html_writer::tag('div', $progresscontainer, array('class' => 'block_prettymycourses_progressbar'));
 
