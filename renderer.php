@@ -111,40 +111,17 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
             $content .= html_writer::tag('div', $coursenamelink, array('class' => 'coursename'));
         }
 
-        // Display course overview files.
-        $contentimages = $contentfiles = '';
-        foreach ($course->get_course_overviewfiles() as $file) {
-            $isimage = $file->is_valid_image();
-            $url = file_encode_url("{$CFG->wwwroot}/pluginfile.php",
-                '/' . $file->get_contextid() . '/' . $file->get_component() . '/' .
-                $file->get_filearea() . $file->get_filepath() . $file->get_filename(), !$isimage);
-            if ($isimage) {
-                $contentimages .= html_writer::tag('div',
-                    html_writer::empty_tag('img', array('src' => $url, 'style' => 'max-height: 150px')),
-                    array('class' => 'courseimage'));
+        //get course image
+        $url = self::S3STUB . '/icon/png/icottl_' . $course->shortname . '.png';
+        $courseimage = html_writer::tag('div',
+            html_writer::empty_tag('img', array('src' => $url, 'style' => 'max-height: 150px')),
+            array('class' => 'courseimage'));
 
-                //we only want one image
-                break;
-            } else {
-                $image = $this->output->pix_icon(file_file_icon($file, 24), $file->get_filename(), 'moodle');
-                $filename = html_writer::tag('span', $image, array('class' => 'fp-icon')) .
-                    html_writer::tag('span', $file->get_filename(), array('class' => 'fp-filename'));
-                $contentfiles .= html_writer::tag('span',
-                    html_writer::link($url, $filename),
-                    array('class' => 'coursefile fp-filename-icon'));
-                //we only want one image
-                break;
-            }
-        }
-        if (!empty($contentimages)) {
-            $courseimagelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
-                $contentimages, array('class' => $course->visible ? '' : 'dimmed'));
-            $content .= $courseimagelink;
-        }elseif(!empty($contentfiles)) {
-            $courseimagelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
-                $contentfiles, array('class' => $course->visible ? '' : 'dimmed'));
-            $content .= $courseimagelink;
-        }
+        //link course image and add to content
+        $courseimagelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
+            $courseimage, array('class' => $course->visible ? '' : 'dimmed'));
+        $content .= $courseimagelink;
+
         //add course dates
         $startdate = get_string('startdate','block_prettymycourses','04/11/2017');;
         $enddate = get_string('enddate','block_prettymycourses','04/11/2017');
@@ -169,6 +146,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
     $content .=  html_writer::tag('div',$progressbarlabel .  $progresscontainer, array('class' => 'block_prettymycourses_progressbar'));
 
         return html_writer::tag('div', $content, array('class' => 'block_prettymycourses_course'));
+
     }
 
 
