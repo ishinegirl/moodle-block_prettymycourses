@@ -94,7 +94,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
 
     protected function render_one_course($thecourse, $showcoursename)
     {
-        global $CFG;
+        global $CFG, $DB,$USER;
         require_once($CFG->dirroot . '/course/renderer.php');
         require_once($CFG->libdir . '/coursecatlib.php');
         $chelper = new coursecat_helper();
@@ -123,8 +123,23 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         $content .= $courseimagelink;
 
         //add course dates
-        $startdate = get_string('startdate','block_prettymycourses','04/11/2017');;
-        $enddate = get_string('enddate','block_prettymycourses','04/11/2017');
+        $startdate = '--/--/--';
+        $enddate = '--/--/--';
+        $SQL = "SELECT mue.timestart, mue.timeend FROM mdl_user_enrolments mue  
+          INNER JOIN mdl_enrol me ON me.id = mue.enrolid
+          WHERE me.courseid = ? AND mue.userid =? AND me.enrol='manual'";
+
+        $results = $DB->get_records_sql($SQL,array($course->id, $USER->id));
+        if($results){
+            $result = array_shift($results);
+            if($result->timestart>0){$startdate=date('d/m/Y',$result->timestart);}
+            if($result->timeend>0){$enddate=date('d/m/Y',$result->timeend);}
+        }
+
+
+
+        $startdate = get_string('startdate','block_prettymycourses',$startdate);;
+        $enddate = get_string('enddate','block_prettymycourses',$enddate);
         $content .=  html_writer::tag('div', $startdate, array('class' => 'block_prettymycourses_startdate'));
         $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate'));
 
