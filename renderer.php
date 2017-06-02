@@ -200,9 +200,9 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
 
         //add course dates
         $startdate = get_string('startdate','block_prettymycourses','04/11/2017');;
-        $enddate = get_string('enddate','block_prettymycourses','04/11/2017');
-        $content .=  html_writer::tag('div', $startdate, array('class' => 'block_prettymycourses_startdate'));
-        $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate'));
+        $enddate = get_string('enddate','block_prettymycourses','04/12/2017');
+        $content .=  html_writer::tag('div', $startdate, array('class' => 'block_prettymycourses_startdate prereg'));
+        $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate prereg'));
 
         return html_writer::tag('div', $content, array('class' => 'block_prettymycourses_course'));
 
