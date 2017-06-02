@@ -132,8 +132,8 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         $results = $DB->get_records_sql($SQL,array($course->id, $USER->id));
         if($results){
             $result = array_shift($results);
-            if($result->timestart>0){$startdate=date('d/m/Y',$result->timestart);}
-            if($result->timeend>0){$enddate=date('d/m/Y',$result->timeend);}
+            if($result->timestart>0){$startdate=date('Y年m月d日',$result->timestart);}
+            if($result->timeend>0){$enddate=date('Y年m月d日',$result->timeend);}
         }
 
 
@@ -176,6 +176,11 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         //init content
         $content = '';
 
+        //if we are not beyond the course enrolstartdate return blank
+        if(time()>$prereg->enrolstartdate){
+            return $content;
+        }
+
         //if we are showing coursenames, do that.
         if ($showcoursename) {
             $coursename = $chelper->get_course_formatted_name($course);
@@ -192,8 +197,11 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
 
 
         //add course dates
-        $startdate = get_string('startdate','block_prettymycourses','04/11/2017');;
-        $enddate = get_string('enddate','block_prettymycourses','04/12/2017');
+
+        $startdate=date('Y年m月d日',$prereg->enrolstartdate);
+        $startdate = get_string('startdate','block_prettymycourses',$startdate);
+        $enddate=date('Y年m月d日',$prereg->enrolenddate);
+        $enddate = get_string('enddate','block_prettymycourses',$enddate);
         $content .=  html_writer::tag('div', $startdate, array('class' => 'block_prettymycourses_startdate prereg'));
         $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate prereg'));
 
