@@ -164,9 +164,9 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
                         array('class' => 'progress-bar','role'=>'progressbar','aria-valuemin'=>"0",
                         'aria-valuemax'=>"100",'aria-valuenow'=>"$progresspercent",'style'=>"width: $progresspercent%"));
         $progressbarlabel =  html_writer::tag('div', get_string('progress','block_prettymycourses'), array('class' => 'progressbarlabel'));
-        $progresscontainer =  html_writer::tag('div',$progressbarlabel . $progressbar, array('class' => 'progress'));
+        $progresscontainer =  html_writer::tag('div',$progressbar, array('class' => 'progress'));
 
-    $content .=  html_writer::tag('div', $progresscontainer, array('class' => 'block_prettymycourses_progressbar'));
+    $content .=  html_writer::tag('div',$progressbarlabel .  $progresscontainer, array('class' => 'block_prettymycourses_progressbar'));
 
         return html_writer::tag('div', $content, array('class' => 'block_prettymycourses_course'));
     }
