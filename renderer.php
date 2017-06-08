@@ -18,19 +18,23 @@
  * prettymycourses block rendrer
  *
  * @package    block_prettymycourses
- * @copyright  2012 Adam Olley <adam.olley@netspot.com.au>
+ * @copyright  2017 Justin Hunt <justin@@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Course_overview block rendrer
+ * Pretty MyCourses block renderer
  *
- * @copyright  2012 Adam Olley <adam.olley@netspot.com.au>
+ * @copyright  2017 Justin Hunt <justin@@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_prettymycourses_renderer extends plugin_renderer_base {
 
+    //TO DO
+    //this should really be a setting, so we can edit it from the admin area in the
+    //unliley event that everything changes, or somebody else wants to use this system
+    //we would probably also add the grey and non grey image path filename templates too J 20170602
     const S3STUB = 'https://s3-ap-northeast-1.amazonaws.com/ishinevideocontent99/publiccontent/courses/siteimages/ispcx_images';
 
 
@@ -92,6 +96,9 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         return $output;
     }
 
+    //TO DO
+    //This needs a little work. We are doing a db call here, that really is not
+    //supposed to be in the renderer. But whatever .. J 20170602
     protected function render_one_course($thecourse, $showcoursename)
     {
         global $CFG, $DB,$USER;
@@ -177,7 +184,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         $content = '';
 
         //if we are not beyond the course enrolstartdate return blank
-        if(time()>$prereg->enrolstartdate){
+        if(time()>$prereg->startdate){
             return $content;
         }
 
@@ -198,9 +205,9 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
 
         //add course dates
 
-        $startdate=date('Y年m月d日',$prereg->enrolstartdate);
+        $startdate=date('Y年m月d日',$prereg->startdate);
         $startdate = get_string('startdate','block_prettymycourses',$startdate);
-        $enddate=date('Y年m月d日',$prereg->enrolenddate);
+        $enddate=date('Y年m月d日',$prereg->enddate);
         $enddate = get_string('enddate','block_prettymycourses',$enddate);
         $content .=  html_writer::tag('div', $startdate, array('class' => 'block_prettymycourses_startdate prereg'));
         $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate prereg'));

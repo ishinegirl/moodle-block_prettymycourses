@@ -65,8 +65,7 @@ class block_prettymycourses extends block_base {
 
 
         //get prereg courses and redo array indexes
-        $preregistrations = \block_prettymycourses\preregmanager::fetch_preregistrations($USER->email);
-        $preregistrations = array_values($preregistrations);
+        $preregistrations = \block_prettymycourses\preregmanager::fetch_preregistrations();
 
 
         $preregcourses = array();
