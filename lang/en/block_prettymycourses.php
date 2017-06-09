@@ -73,7 +73,7 @@ $string['showcoursenames'] = 'Show course names';
 $string['showcoursenamesdesc'] = '';
 $string['progress'] = 'Progress';
 $string['hiddencourses'] = 'Courses to hide';
-$string['courseorder'] = 'Course display order';
 $string['hiddencourses_desc'] = 'csv list of course ids that should not be dsplayed in the block';
-$string['courseorder_desc'] = 'csv list of course ids for the display order';
+$string['courseimagesbase'] = 'Course images base url';
+$string['courseimagesbase_desc'] = '';
 

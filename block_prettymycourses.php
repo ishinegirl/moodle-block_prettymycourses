@@ -89,6 +89,8 @@ class block_prettymycourses extends block_base {
                    $usecourses[] = $course;
                }
             }
+        }else{
+            $usecourses = $courses;
         }
 
 

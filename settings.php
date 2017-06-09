@@ -27,6 +27,9 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('block_prettymycourses/hiddencourses', new lang_string('hiddencourses', 'block_prettymycourses'),
         new lang_string('hiddencourses_desc', 'block_prettymycourses'), '0', PARAM_TEXT));
 
+    $settings->add(new admin_setting_configtext('block_prettymycourses/courseimagesbase', new lang_string('courseimagesbase', 'block_prettymycourses'),
+        new lang_string('courseimagesbase_desc', 'block_prettymycourses'), '', PARAM_TEXT));
+
     $settings->add(new admin_setting_configcheckbox('block_prettymycourses/showchildren', new lang_string('showchildren', 'block_prettymycourses'),
         new lang_string('showchildrendesc', 'block_prettymycourses'), 1, PARAM_INT));
     $settings->add(new admin_setting_configcheckbox('block_prettymycourses/showwelcomearea', new lang_string('showwelcomearea', 'block_prettymycourses'),

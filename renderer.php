@@ -31,12 +31,6 @@ defined('MOODLE_INTERNAL') || die;
  */
 class block_prettymycourses_renderer extends plugin_renderer_base {
 
-    //TO DO
-    //this should really be a setting, so we can edit it from the admin area in the
-    //unliley event that everything changes, or somebody else wants to use this system
-    //we would probably also add the grey and non grey image path filename templates too J 20170602
-    const S3STUB = 'https://s3-ap-northeast-1.amazonaws.com/ishinevideocontent99/publiccontent/courses/siteimages/ispcx_images';
-
 
     public function prettymycourses($courses,$preregistrations,$preregcourses, $showcoursenames)
     {
@@ -142,7 +136,8 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         }
 
         //get course image
-        $url = self::S3STUB . '/icon/png/icottl_' . $course->shortname . '.png';
+        $config = get_config('block_prettymycourses');
+        $url = $config->courseimagesbase . '/icon/png/icottl_' . $course->shortname . '.png';
         $courseimage = html_writer::tag('div',
             html_writer::empty_tag('img', array('src' => $url, 'style' => 'max-height: 150px')),
             array('class' => 'courseimage'));
@@ -219,7 +214,8 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
 
 
         //grey image
-        $url = self::S3STUB . '/icon/png/gray/icottl_' . $course->shortname . '_g.png';
+        $config = get_config('block_prettymycourses');
+        $url = $config->courseimagesbase . '/icon/png/gray/icottl_' . $course->shortname . '_g.png';
         $content .= html_writer::tag('div',
             html_writer::empty_tag('img', array('src' => $url, 'style' => 'max-height: 150px')),
             array('class' => 'courseimage'));
