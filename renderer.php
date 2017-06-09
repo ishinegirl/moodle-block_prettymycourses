@@ -40,7 +40,19 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
 
     public function prettymycourses($courses,$preregistrations,$preregcourses, $showcoursenames)
     {
+
+
         $html = '';
+        usort($courses,function($a,$b){
+            if($a->idnumber == $b->idnumber){
+                return 0;
+            }elseif($a->idnumber < $b->idnumber) {
+                return -1;
+            }else{
+                return 1;
+            }
+        });
+
         foreach ($courses as $course) {
             $html .= $this->render_one_course($course, $showcoursenames);
         }
@@ -56,6 +68,17 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         // Wrap course list in a div and return.
         return html_writer::tag('div', $html, array('class' => 'course_list'));
 
+    }
+
+    protected function sortArrayByArra(array $array, array $orderArray) {
+        $ordered = array();
+        foreach ($orderArray as $key) {
+            if (array_key_exists($key, $array)) {
+                $ordered[$key] = $array[$key];
+                unset($array[$key]);
+            }
+        }
+        return $ordered + $array;
     }
 
 

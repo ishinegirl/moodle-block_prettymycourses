@@ -24,10 +24,9 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext('block_prettymycourses/defaultmaxcourses', new lang_string('defaultmaxcourses', 'block_prettymycourses'),
-        new lang_string('defaultmaxcoursesdesc', 'block_prettymycourses'), 10, PARAM_INT));
-    $settings->add(new admin_setting_configcheckbox('block_prettymycourses/forcedefaultmaxcourses', new lang_string('forcedefaultmaxcourses', 'block_prettymycourses'),
-        new lang_string('forcedefaultmaxcoursesdesc', 'block_prettymycourses'), 1, PARAM_INT));
+    $settings->add(new admin_setting_configtext('block_prettymycourses/hiddencourses', new lang_string('hiddencourses', 'block_prettymycourses'),
+        new lang_string('hiddencourses_desc', 'block_prettymycourses'), '0', PARAM_TEXT));
+
     $settings->add(new admin_setting_configcheckbox('block_prettymycourses/showchildren', new lang_string('showchildren', 'block_prettymycourses'),
         new lang_string('showchildrendesc', 'block_prettymycourses'), 1, PARAM_INT));
     $settings->add(new admin_setting_configcheckbox('block_prettymycourses/showwelcomearea', new lang_string('showwelcomearea', 'block_prettymycourses'),

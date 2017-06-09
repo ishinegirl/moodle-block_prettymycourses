@@ -43,15 +43,21 @@ class preregmanager {
      * @param String $user_email
      * @return string
      */
-    public static function fetch_preregistrations() {
+    public static function fetch_preregistrations($hiddencourses) {
             global $DB,$USER;
 
-        $params = array('courselevel'=>CONTEXT_COURSE,'userid'=>$USER->id,'now1'=>time(),'now2'=>time(),'usersuspended'=>ENROL_USER_SUSPENDED);
+        $params = array('courselevel'=>CONTEXT_COURSE,'userid'=>$USER->id,'now1'=>time(),'now2'=>time(),
+            'usersuspended'=>ENROL_USER_SUSPENDED, 'hiddencourses'=>$hiddencourses);
+
         $sql = "SELECT e.courseid as courseid, ue.timestart as startdate, ue.timeend as enddate 
                   FROM {user_enrolments} ue
                   JOIN {enrol} e ON (e.id = ue.enrolid AND e.enrol = 'ishinemanual')
                   JOIN {context} c ON (c.instanceid = e.courseid AND c.contextlevel = :courselevel)
                  WHERE ue.userid = :userid AND ue.timestart > :now1 AND ue.timeend > :now2 AND ue.status = :usersuspended";
+        if(!empty($hiddencourses)){
+            $sql .= ' AND NOT e.courseid IN (:hiddencourses)';
+        }
+        $sql .= ' ORDER BY ue.timestart';
 
         $prereg_set = $DB->get_recordset_sql($sql, $params);
         $preregistrations = array();

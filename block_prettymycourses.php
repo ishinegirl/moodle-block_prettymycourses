@@ -65,7 +65,8 @@ class block_prettymycourses extends block_base {
 
 
         //get prereg courses and redo array indexes
-        $preregistrations = \block_prettymycourses\preregmanager::fetch_preregistrations();
+        $hiddencourses = $config->hiddencourses;
+        $preregistrations = \block_prettymycourses\preregmanager::fetch_preregistrations($hiddencourses);
 
 
         $preregcourses = array();
@@ -77,7 +78,18 @@ class block_prettymycourses extends block_base {
         }
 
         //get enrolled courses
-       $courses = enrol_get_my_courses();
+        $courses = enrol_get_my_courses();
+        $usecourses= array();
+
+        //remove hidden courses
+        if(!empty($hiddencourses)){
+            $hiddencourseids = explode(',',$hiddencourses);
+            foreach($courses as $course){
+               if(!in_array($course->id,$hiddencourseids)){
+                   $usecourses[] = $course;
+               }
+            }
+        }
 
 
         $renderer = $this->page->get_renderer('block_prettymycourses');
@@ -92,7 +104,7 @@ class block_prettymycourses extends block_base {
             $this->content->text .= get_string('nocourses','my');
         } else {
             // For each course, build category cache.
-            $this->content->text .= $renderer->prettymycourses($courses, $preregistrations,$preregcourses, $config->showcoursenames);
+            $this->content->text .= $renderer->prettymycourses($usecourses, $preregistrations,$preregcourses, $config->showcoursenames);
         }
 
         return $this->content;
