@@ -152,7 +152,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         $enddate = '--/--/--';
         $SQL = "SELECT mue.timestart, mue.timeend FROM mdl_user_enrolments mue  
           INNER JOIN mdl_enrol me ON me.id = mue.enrolid
-          WHERE me.courseid = ? AND mue.userid =? AND me.enrol='manual'";
+          WHERE me.courseid = ? AND mue.userid =? AND me.enrol='ishinemanual'";
 
         $results = $DB->get_records_sql($SQL,array($course->id, $USER->id));
         if($results){
