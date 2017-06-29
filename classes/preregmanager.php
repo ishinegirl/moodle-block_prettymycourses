@@ -53,11 +53,12 @@ class preregmanager {
                   FROM {user_enrolments} ue
                   JOIN {enrol} e ON (e.id = ue.enrolid AND e.enrol = 'ishinemanual')
                   JOIN {context} c ON (c.instanceid = e.courseid AND c.contextlevel = :courselevel)
+                  JOIN {course} co ON e.courseid = co.id                 
                  WHERE ue.userid = :userid AND ue.timestart > :now1 AND ue.timeend > :now2 AND ue.status = :usersuspended";
         if(!empty($hiddencourses)){
             $sql .= ' AND NOT e.courseid IN (:hiddencourses)';
         }
-        $sql .= ' ORDER BY ue.timestart';
+        $sql .= ' ORDER BY ue.timestart, co.idnumber';
 
         $prereg_set = $DB->get_recordset_sql($sql, $params);
         $preregistrations = array();
