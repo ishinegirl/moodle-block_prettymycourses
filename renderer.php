@@ -197,14 +197,20 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
 
         //Add Buy the course button
         if ($course->fullcourse) {
-            $buybuttonattr = array('class' => 'btn btn-success ishine-buybutton');
+            $buybuttonattr = array();
             $buybuttonattr['type'] = 'button';
             $buybuttonattr['src']='https://ispc.jp/tuition/before';
             $buybuttonattr['style'] = 'margin: auto; display: grid;';
             if ($course->alreadypurchased) {
                 $buybuttonattr['disabled'] = 'disabled';
+                $buybuttonattr['class'] = 'btn btn-success ishine-buybutton';
+                $buybuttontext = get_string('boughtbuttontext', 'block_prettymycourses');
+            }else{
+                $buybuttonattr['class'] = 'btn ishine-buybutton';
+                $buybuttontext = get_string('buybuttontext', 'block_prettymycourses');
             }
-            $buybutton = html_writer::tag('button', get_string('buybuttontext', 'block_prettymycourses'),
+
+            $buybutton = html_writer::tag('button', $buybuttontext,
                 $buybuttonattr);
             $content .= $buybutton;
 

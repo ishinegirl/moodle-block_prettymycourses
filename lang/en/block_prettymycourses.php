@@ -79,3 +79,4 @@ $string['courseimagesbase_desc'] = '';
 $string['trialcoursepairs'] = 'Trial course pairs';
 $string['trialcoursepairsdesc'] = 'Enter a csv list of trial and full course pair shortnames each separated by a pipe(|) character. ';
 $string['buybuttontext']='Buy Course';
+$string['boughtbuttontext']='Course Purchased';
