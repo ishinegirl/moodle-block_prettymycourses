@@ -76,4 +76,6 @@ $string['hiddencourses'] = 'Courses to hide';
 $string['hiddencourses_desc'] = 'csv list of course ids that should not be dsplayed in the block';
 $string['courseimagesbase'] = 'Course images base url';
 $string['courseimagesbase_desc'] = '';
-
+$string['trialcoursepairs'] = 'Trial course pairs';
+$string['trialcoursepairsdesc'] = 'Enter a csv list of trial and full course pair shortnames each separated by a pipe(|) character. ';
+$string['buybuttontext']='Buy Course';

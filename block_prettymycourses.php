@@ -78,7 +78,8 @@ class block_prettymycourses extends block_base {
         }
 
         //get enrolled courses
-        $courses = enrol_get_my_courses();
+        //$courses = enrol_get_my_courses();
+        $courses = enrol_get_users_courses($USER->id);
         $usecourses= array();
 
         //remove hidden courses
@@ -91,6 +92,35 @@ class block_prettymycourses extends block_base {
             }
         }else{
             $usecourses = $courses;
+        }
+
+        //to make processing trial/full logic a bit easier
+        $shortnames = [];
+        foreach($usecourses as $usecourse){
+            $usecourse->fullcourse=false;
+            $usecourse->alreadypurchased=false;
+            $shortnames[]=$usecourse->shortname;
+        }
+
+        //add trial course / full course pair info
+        if(!empty($config->trialcoursepairs) ){
+            $trialfullpairs = explode(',',$config->trialcoursepairs);
+            foreach($trialfullpairs as $pairstring){
+                $pair=explode('|',$pairstring);
+                if(count($pair)==2){
+                    foreach($usecourses as $usecourse){
+
+                        if($usecourse->shortname==$pair[0]){
+                            //set the trial course's full course pair (shortname)
+                            $usecourse->fullcourse=$pair[0];
+                            //check if already enrolled in full course
+                            if(in_array($pair[1],$shortnames)){
+                                $usecourse->alreadypurchased=true;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
 

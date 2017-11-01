@@ -18,7 +18,7 @@
  * prettymycourses block settings
  *
  * @package    block_prettymycourses
- * @copyright  2012 Adam Olley <adam.olley@netspot.com.au>
+ * @copyright  2017 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
@@ -46,4 +46,8 @@ if ($ADMIN->fulltree) {
 
     $settings->add(new admin_setting_configcheckbox('block_prettymycourses/showcoursenames', new lang_string('showcoursenames', 'block_prettymycourses'),
         new lang_string('showcoursenamesdesc', 'block_prettymycourses'), 1, PARAM_INT));
+
+    $settings->add(new admin_setting_configtextarea('block_prettymycourses/trialcoursepairs', new lang_string('trialcoursepairs', 'block_prettymycourses'),
+        new lang_string('trialcoursepairsdesc', 'block_prettymycourses'), 'Pretty MyCourses', PARAM_RAW));
+
 }

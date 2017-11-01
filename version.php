@@ -18,12 +18,12 @@
  * Version details
  *
  * @package    block_prettymycourses
- * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
+ * @copyright  1999 onwards Justin Hunt (https://poodll.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2016120500;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version   = 2017110100;        // The current plugin version (Date: YYYYMMDDXX)
 $plugin->requires  = 2016112900;        // Requires this Moodle version
 $plugin->component = 'block_prettymycourses'; // Full name of the plugin (used for diagnostics)

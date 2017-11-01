@@ -18,7 +18,7 @@
  * prettymycourses block rendrer
  *
  * @package    block_prettymycourses
- * @copyright  2017 Justin Hunt <justin@@poodll.com>
+ * @copyright  2017 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
@@ -118,7 +118,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
     //supposed to be in the renderer. But whatever .. J 20170602
     protected function render_one_course($thecourse, $showcoursename)
     {
-        global $CFG, $DB,$USER;
+        global $CFG, $DB, $USER;
         require_once($CFG->dirroot . '/course/renderer.php');
         require_once($CFG->libdir . '/coursecatlib.php');
         $chelper = new coursecat_helper();
@@ -127,63 +127,105 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         //init content
         $content = '';
 
+        //get course dates
+        $startdate = '--/--/--';
+        $enddate = '--/--/--';
+        $SQL = "SELECT mue.timestart, mue.timeend FROM mdl_user_enrolments mue  
+          INNER JOIN mdl_enrol me ON me.id = mue.enrolid
+          WHERE me.courseid = ? AND mue.userid =?";//AND me.enrol='ishinemanual'";
+
+        $results = $DB->get_records_sql($SQL, array($course->id, $USER->id));
+        if ($results) {
+            $result = array_shift($results);
+            if ($result->timestart > 0) {
+                $startdate = date('Y年m月d日', $result->timestart);
+            }
+            if ($result->timeend > 0) {
+                $enddate = date('Y年m月d日', $result->timeend);
+            }
+        }
+
+        //if we are preregistered and not starting yet
+        if($result->timestart > time()){return;}
+
+        //determine expiry
+        $expired = $result->timeend < time();
+
         //if we are showing coursenames, do that.
         if ($showcoursename) {
             $coursename = $chelper->get_course_formatted_name($course);
-            $coursenamelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
-                $coursename, array('class' => $course->visible ? '' : 'dimmed'));
+            if ($expired) {
+                $coursenamelink = html_writer::tag('span', $coursename, array('class' => 'dimmed'));
+            } else {
+                $coursenamelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
+                    $coursename, array('class' => $course->visible ? '' : 'dimmed'));
+            }
+
             $content .= html_writer::tag('div', $coursenamelink, array('class' => 'coursename'));
         }
 
         //get course image
         $config = get_config('block_prettymycourses');
-        $url = $config->courseimagesbase . '/icon/png/icottl_' . $course->shortname . '.png';
-        $courseimage = html_writer::tag('div',
-            html_writer::empty_tag('img', array('src' => $url, 'style' => 'max-height: 150px')),
-            array('class' => 'courseimage'));
+
 
         //link course image and add to content
-        $courseimagelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
-            $courseimage, array('class' => $course->visible ? '' : 'dimmed'));
+        if ($expired) {
+            $url = $config->courseimagesbase . '/icon/png/gray/icottl_' . $course->shortname . '_g.png';
+            $courseimage = html_writer::tag('div',
+                html_writer::empty_tag('img', array('src' => $url, 'style' => 'max-height: 150px')),
+                array('class' => 'courseimage'));
+
+            $courseimagelink = html_writer::tag('span',
+                $courseimage, array('class' => 'dimmed'));
+        } else {
+            $url = $config->courseimagesbase . '/icon/png/icottl_' . $course->shortname . '.png';
+            $courseimage = html_writer::tag('div',
+                html_writer::empty_tag('img', array('src' => $url, 'style' => 'max-height: 150px')),
+                array('class' => 'courseimage'));
+
+            $courseimagelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
+                $courseimage, array('class' => $course->visible ? '' : 'dimmed'));
+        }
         $content .= $courseimagelink;
 
-        //add course dates
-        $startdate = '--/--/--';
-        $enddate = '--/--/--';
-        $SQL = "SELECT mue.timestart, mue.timeend FROM mdl_user_enrolments mue  
-          INNER JOIN mdl_enrol me ON me.id = mue.enrolid
-          WHERE me.courseid = ? AND mue.userid =? AND me.enrol='ishinemanual'";
 
-        $results = $DB->get_records_sql($SQL,array($course->id, $USER->id));
-        if($results){
-            $result = array_shift($results);
-            if($result->timestart>0){$startdate=date('Y年m月d日',$result->timestart);}
-            if($result->timeend>0){$enddate=date('Y年m月d日',$result->timeend);}
-        }
+        $startdate = get_string('startdate', 'block_prettymycourses', $startdate);;
+        $enddate = get_string('enddate', 'block_prettymycourses', $enddate);
+        $content .= html_writer::tag('div', $startdate, array('class' => 'block_prettymycourses_startdate'));
+        $content .= html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate'));
 
 
-
-        $startdate = get_string('startdate','block_prettymycourses',$startdate);;
-        $enddate = get_string('enddate','block_prettymycourses',$enddate);
-        $content .=  html_writer::tag('div', $startdate, array('class' => 'block_prettymycourses_startdate'));
-        $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate'));
+        //Add Buy the course button
+        if ($course->fullcourse) {
+            $buybuttonattr = array('class' => 'btn btn-success ishine-buybutton');
+            $buybuttonattr['type'] = 'button';
+            $buybuttonattr['src']='https://ispc.jp/tuition/before';
+            $buybuttonattr['style'] = 'margin: auto; display: grid;';
+            if ($course->alreadypurchased) {
+                $buybuttonattr['disabled'] = 'disabled';
+            }
+            $buybutton = html_writer::tag('button', get_string('buybuttontext', 'block_prettymycourses'),
+                $buybuttonattr);
+            $content .= $buybutton;
 
         //add progress bar
-        $modinfo = get_fast_modinfo($thecourse);
-        $sect_compl_info = \availability_sectioncompleted\condition::get_section_completion_info(
-                            \availability_sectioncompleted\condition::ALL_SECTIONS,
-                            $course,
-                            $modinfo) ;
-        $progresspercent= ($sect_compl_info->activitycount && $sect_compl_info->activitycompletedcount)?
-                floor(($sect_compl_info->activitycompletedcount  /  $sect_compl_info->activitycount)*100) :
+        }else{
+            $modinfo = get_fast_modinfo($thecourse);
+            $sect_compl_info = \availability_sectioncompleted\condition::get_section_completion_info(
+                \availability_sectioncompleted\condition::ALL_SECTIONS,
+                $course,
+                $modinfo);
+            $progresspercent = ($sect_compl_info->activitycount && $sect_compl_info->activitycompletedcount) ?
+                floor(($sect_compl_info->activitycompletedcount / $sect_compl_info->activitycount) * 100) :
                 0;
-        $progressbar=html_writer::tag('div', $progresspercent .'%',
-                        array('class' => 'progress-bar','role'=>'progressbar','aria-valuemin'=>"0",
-                        'aria-valuemax'=>"100",'aria-valuenow'=>"$progresspercent",'style'=>"width: $progresspercent%"));
-        $progressbarlabel =  html_writer::tag('div', get_string('progress','block_prettymycourses'), array('class' => 'progressbarlabel'));
-        $progresscontainer =  html_writer::tag('div',$progressbar, array('class' => 'progress'));
+            $progressbar = html_writer::tag('div', $progresspercent . '%',
+                array('class' => 'progress-bar', 'role' => 'progressbar', 'aria-valuemin' => "0",
+                    'aria-valuemax' => "100", 'aria-valuenow' => "$progresspercent", 'style' => "width: $progresspercent%"));
+            $progressbarlabel = html_writer::tag('div', get_string('progress', 'block_prettymycourses'), array('class' => 'progressbarlabel'));
+            $progresscontainer = html_writer::tag('div', $progressbar, array('class' => 'progress'));
+            $content .= html_writer::tag('div', $progressbarlabel . $progresscontainer, array('class' => 'block_prettymycourses_progressbar'));
+        }
 
-    $content .=  html_writer::tag('div',$progressbarlabel .  $progresscontainer, array('class' => 'block_prettymycourses_progressbar'));
 
         return html_writer::tag('div', $content, array('class' => 'block_prettymycourses_course'));
 
