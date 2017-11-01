@@ -149,7 +149,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         if($result->timestart > time()){return;}
 
         //determine expiry
-        $expired = $result->timeend < time();
+        $expired = ($result->timeend > 0) && ($result->timeend < time());
 
         //if we are showing coursenames, do that.
         if ($showcoursename) {
