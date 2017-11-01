@@ -203,10 +203,10 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
             $buybuttonattr['style'] = 'margin: auto; display: grid;';
             if ($course->alreadypurchased) {
                 $buybuttonattr['disabled'] = 'disabled';
-                $buybuttonattr['class'] = 'btn btn-success ishine-buybutton';
+                $buybuttonattr['class'] = 'btn ishine-buybutton';
                 $buybuttontext = get_string('boughtbuttontext', 'block_prettymycourses');
             }else{
-                $buybuttonattr['class'] = 'btn ishine-buybutton';
+                $buybuttonattr['class'] = 'btn btn-success　ishine-buybutton';
                 $buybuttontext = get_string('buybuttontext', 'block_prettymycourses');
             }
 
