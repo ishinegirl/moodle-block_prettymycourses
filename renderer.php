@@ -180,7 +180,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
         } else {
             $url = $config->courseimagesbase . '/icon/png/icottl_' . $course->shortname . '.png';
             $courseimage = html_writer::tag('div',
-                html_writer::empty_tag('img', array('src' => $url, 'style' => 'max-height: 150px')),
+                html_writer::empty_tag('img', array('href' => $url, 'style' => 'max-height: 150px')),
                 array('class' => 'courseimage'));
 
             $courseimagelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
