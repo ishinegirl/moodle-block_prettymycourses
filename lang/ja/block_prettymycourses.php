@@ -74,5 +74,5 @@ $string['showcoursenamesdesc'] = '';
 $string['progress'] = '進捗率';
 $string['trialcoursepairs'] = '体験コースペア';
 $string['trialcoursepairsdesc'] = 'csv list of trial and full course pair shortnames each separated by a pipe(|) character. ';
-$string['buybuttontext']='正規コースへのお申し込み';
+$string['buybuttontext']='正規コース申込';
 $string['boughtbuttontext']='申込済み';
