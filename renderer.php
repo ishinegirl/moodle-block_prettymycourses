@@ -141,7 +141,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
                 $startdate = date('Y年m月d日', $result->timestart);
             }
             if ($result->timeend > 0) {
-                $enddate=date('Y年m月d日',$result->timeend) . '<br>' . date('h時m分',$result->timeend);
+                $enddate=date('Y年m月d日',$result->timeend) . '<br>' . date('H時i分',$result->timeend);
             }
         }
 
@@ -274,7 +274,7 @@ class block_prettymycourses_renderer extends plugin_renderer_base {
 
         $startdate=date('Y年m月d日',$prereg->startdate);
         $startdate = get_string('startdate','block_prettymycourses',$startdate);
-        $enddate=date('Y年m月d日',$prereg->enddate) . '<br>' . date('h時m分',$prereg->enddate);
+        $enddate=date('Y年m月d日',$prereg->enddate) . '<br>' . date('H時i分',$prereg->enddate);
         $enddate = get_string('enddate','block_prettymycourses',$enddate);
         $content .=  html_writer::tag('div', $startdate, array('class' => 'block_prettymycourses_startdate prereg'));
         $content .=  html_writer::tag('div', $enddate, array('class' => 'block_prettymycourses_enddate prereg'));
